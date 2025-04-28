@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: DummyJSON Products API
+  description: API для работы с продуктами из DummyJSON и сохранения их в базу данных.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api
+    description: Локальный сервер разработки
+
+tags:
+  - name: Products
+    description: Операции с продуктами
+
+paths:
+  /fetch-iphones:
+    post:
+      tags:
+        - Products
+      summary: Получение и сохранение всех продуктов "iPhone"
+      description: Загружает продукты "iPhone" из DummyJSON API и сохраняет их в базу данных.
+      responses:
+        '200':
+          description: Продукты успешно загружены и сохранены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: iPhones fetched and saved successfully
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal Server Error
+
+  /iphones:
+    get:
+      tags:
+        - Products
+      summary: Получение всех продуктов "iPhone" из базы данных
+      description: Возвращает список всех продуктов "iPhone", сохраненных в базе данных.
+      responses:
+        '200':
+          description: Список продуктов успешно получен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: iPhone 13
+                    description:
+                      type: string
+                      example: The latest model of iPhone with advanced features.
+                    price:
+                      type: number
+                      example: 999.99
+                    stock:
+                      type: integer
+                      example: 50
+                    brand:
+                      type: string
+                      example: Apple
+                    category:
+                      type: string
+                      example: smartphones
+                    images:
+                      type: array
+                      items:
+                        type: string
+                      example: ["https://example.com/iphone13.jpg"]
+        '404':
+          description: Продукты не найдены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No iPhones found in the database.
+
+  /products/add:
+    post:
+      tags:
+        - Products
+      summary: Имитация добавления нового продукта
+      description: Имитирует добавление нового продукта через DummyJSON API и сохраняет его в базу данных.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: BMW Pencil
+                description:
+                  type: string
+                  example: A luxury pencil from BMW
+                price:
+                  type: number
+                  example: 99.99
+                stock:
+                  type: integer
+                  example: 50
+                brand:
+                  type: string
+                  example: BMW
+                category:
+                  type: string
+                  example: stationery
+      responses:
+        '200':
+          description: Продукт успешно добавлен и сохранен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product added and saved successfully
+        '422':
+          description: Ошибки валидации.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    properties:
+                      title:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The title field is required."]
+                      price:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The price must be a number."]
